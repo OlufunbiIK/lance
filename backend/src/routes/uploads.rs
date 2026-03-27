@@ -21,7 +21,7 @@ async fn upload_file(
 ) -> Result<(StatusCode, Json<Value>), AppError> {
     let client = Client::new();
 
-    while let Some(field) = multipart
+    if let Some(field) = multipart
         .next_field()
         .await
         .map_err(|e| AppError::BadRequest(e.to_string()))?
