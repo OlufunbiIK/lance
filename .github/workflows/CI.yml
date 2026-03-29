@@ -8,15 +8,31 @@ on:
 
 env:
   # Dummy variables for tests/builds that might expect them
-  DATABASE_URL: postgresql://postgres@localhost/lance
+  DATABASE_URL: postgresql://lance:lance@localhost:5432/lance
   NEXT_PUBLIC_E2E: "true"
 
 jobs:
   rust:
     name: Rust (Workspace)
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: lance
+          POSTGRES_PASSWORD: lance
+          POSTGRES_DB: lance
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y libssl-dev pkg-config
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@v1
         with:
