@@ -395,25 +395,25 @@ mod test {
         let hash = Bytes::from_slice(&env, b"QmSomeIPFSHash");
         cc.post_job(&1u64, &client, &hash, &5000i128);
 
-        let job = cc.get_job(&1u64).unwrap();
+        let job = cc.get_job(&1u64);
         assert_eq!(job.status, JobStatus::Open);
         assert_eq!(job.freelancer, None);
 
         let proposal = Bytes::from_slice(&env, b"QmProposalHash");
         cc.submit_bid(&1u64, &freelancer, &proposal);
 
-        let bids = cc.get_bids(&1u64).unwrap();
+        let bids = cc.get_bids(&1u64);
         assert_eq!(bids.len(), 1);
 
         cc.accept_bid(&1u64, &client, &freelancer);
-        let job = cc.get_job(&1u64).unwrap();
+        let job = cc.get_job(&1u64);
         assert_eq!(job.status, JobStatus::InProgress);
         assert_eq!(job.freelancer, Some(freelancer.clone()));
 
         let deliverable = Bytes::from_slice(&env, b"QmDeliverableHash");
         cc.submit_deliverable(&1u64, &freelancer, &deliverable);
 
-        let job = cc.get_job(&1u64).unwrap();
+        let job = cc.get_job(&1u64);
         assert_eq!(job.status, JobStatus::DeliverableSubmitted);
 
         let d = cc.get_deliverable(&1u64);
@@ -441,7 +441,7 @@ mod test {
         let proposal = Bytes::from_slice(&env, b"QmProposal");
         cc.submit_bid(&1u64, &freelancer, &proposal);
 
-        let bids = cc.get_bids(&1u64).unwrap();
+        let bids = cc.get_bids(&1u64);
         assert_eq!(bids.len(), 1);
         assert_eq!(bids.get(0).unwrap().freelancer, freelancer);
         assert_eq!(bids.get(0).unwrap().proposal_hash, proposal);
@@ -524,7 +524,7 @@ mod test {
 
         cc.accept_bid(&1u64, &client, &freelancer);
 
-        let job = cc.get_job(&1u64).unwrap();
+        let job = cc.get_job(&1u64);
         assert_eq!(job.status, JobStatus::InProgress);
         assert_eq!(job.freelancer, Some(freelancer));
     }
@@ -574,7 +574,7 @@ mod test {
             cc.submit_bid(&1u64, &freelancer, &proposal);
         }
 
-        let bids = cc.get_bids(&1u64).unwrap();
+        let bids = cc.get_bids(&1u64);
         assert_eq!(bids.len(), 5);
     }
 
@@ -599,7 +599,7 @@ mod test {
         let proposal2 = Bytes::from_slice(&env, b"QmProposal2");
         cc.submit_bid(&1u64, &freelancer, &proposal2);
 
-        let bids = cc.get_bids(&1u64).unwrap();
+        let bids = cc.get_bids(&1u64);
         assert_eq!(bids.len(), 2);
     }
 
@@ -650,7 +650,7 @@ mod test {
         cc.accept_bid(&1u64, &client, &freelancer);
 
         cc.mark_disputed(&1u64);
-        let job = cc.get_job(&1u64).unwrap();
+        let job = cc.get_job(&1u64);
         assert_eq!(job.status, JobStatus::Disputed);
     }
 
@@ -676,7 +676,7 @@ mod test {
         cc.submit_deliverable(&1u64, &freelancer, &deliverable);
 
         cc.mark_disputed(&1u64);
-        let job = cc.get_job(&1u64).unwrap();
+        let job = cc.get_job(&1u64);
         assert_eq!(job.status, JobStatus::Disputed);
     }
 
@@ -744,8 +744,8 @@ mod test {
             cc.submit_bid(&2u64, &f, &prop2);
         }
 
-        assert_eq!(cc.get_bids(&1u64).unwrap().len(), 3);
-        assert_eq!(cc.get_bids(&2u64).unwrap().len(), 3);
+        assert_eq!(cc.get_bids(&1u64).len(), 3);
+        assert_eq!(cc.get_bids(&2u64).len(), 3);
     }
 
     #[test]
