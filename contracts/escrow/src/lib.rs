@@ -162,7 +162,11 @@ impl EscrowContract {
         // Emit an event for off-chain logging and debugging
         env.events().publish(
             ("escrow", "AgentJudgeUpdated"),
-            (admin.clone(), new_agent_judge.clone(), env.ledger().timestamp()),
+            (
+                admin.clone(),
+                new_agent_judge.clone(),
+                env.ledger().timestamp(),
+            ),
         );
 
         Ok(())
@@ -452,11 +456,16 @@ impl EscrowContract {
             }
         }
 
-        env.events()
-            .publish(
-                ("escrow", "DisputeRaised"),
-                (job_id, caller.clone(), released_count, job.milestones.len(), now),
-            );
+        env.events().publish(
+            ("escrow", "DisputeRaised"),
+            (
+                job_id,
+                caller.clone(),
+                released_count,
+                job.milestones.len(),
+                now,
+            ),
+        );
     }
 
     /// Agent Judge resolves dispute -- splits funds by explicit amounts.
@@ -687,9 +696,9 @@ mod test {
         let cc = EscrowContractClient::new(&env, &contract_id);
 
         cc.initialize(&admin, &agent_judge);
-            cc.create_job(&1u64, &client, &freelancer, &token_addr);
-            cc.add_milestone(&1u64, &500i128);
-            cc.add_milestone(&1u64, &500i128);
+        cc.create_job(&1u64, &client, &freelancer, &token_addr);
+        cc.add_milestone(&1u64, &500i128);
+        cc.add_milestone(&1u64, &500i128);
         cc.deposit(&1u64, &1000i128);
 
         // This should panic due to unauthorized release; test annotated with should_panic
@@ -794,7 +803,7 @@ mod test {
         cc.initialize(&admin, &agent_judge);
         cc.create_job(&1u64, &client, &freelancer, &token_addr);
         cc.add_milestone(&1u64, &500i128);
-    cc.deposit(&1u64, &1000i128);
+        cc.deposit(&1u64, &1000i128);
     }
 
     #[test]
