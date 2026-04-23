@@ -727,13 +727,10 @@ impl EscrowContract {
 
         Ok(())
     }
+
 pub fn get_job(env: Env, job_id: u64) -> EscrowJob {
         let key = DataKey::Job(job_id);
-        let job: EscrowJob = env
-            .storage()
-            .persistent()
-            .get(&key)
-            .expect("job not found");
+        let job: EscrowJob = env.storage().persistent().get(&key).expect("job not found");
         Self::bump_job_ttl(&env, &key);
         job
     }
@@ -1810,7 +1807,7 @@ mod test {
         assert_eq!(job.status, EscrowStatus::Disputed);
     }
 
-  #[test]
+ #[test]
     #[should_panic(expected = "Error(Contract, #3)")]
     fn test_refund_by_non_client_panics() {
         let env = Env::default();
